@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>Questions</h2>
+    <table class="table table-stripped">
+        <tr>
+            {% for field in fields %}
+                {% if labels %}
+                    <th>{{ labels[field] }}</th>
+                {% else %}
+                    <th>{{ field }}</th>
+                {% endif %}
+            {% endfor %}
+            <th>Actions</th>
+        </tr>
+        <tbody>
+        {% for question in questions %}
+            <tr>
+                <td><a href="/question/{{ question['id'] }}">{{ question['id'] }}</a></td>
+                <td>
+                    <script>
+                        document.write(askMateUtils({{ question['submission_time'] }}))
+                    </script>
+                </td>
+                <td>{{ question['view_number'] }}</td>
+                <td>{{ question['vote_number'] }}</td>
+                <td>{{ question['title'] }} </td>
+                <td>{{ question['message'] }} </td>
+                <td>
+                    {% if question['image'] %}
+                        <img src="{{ url_for('static', filename='images/'+ question['image']) }}" width="320px"
+                             height="auto"/>
+                    {% endif %}
+                <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary btn-custom-width mb-1" onclick="window.location.href='/question/{{ question['id'] }}'">
+                            <i class="fa fa-check"></i>Edit
+                        </button>
+                        <form action="/question/{{ question['id'] }}/delete" method="post">
+                            <button type="submit" class="btn btn-sm btn-outline-primary btn-custom-width mb-1">
+                                <i class="fa fa-check"></i>Delete
+                            </button>
+                        </form>
+                        <form action="/question/{{ question['id'] }}/vote-up" method="post">
+                            <button type="submit" class="btn btn-sm btn-outline-primary btn-custom-width mb-1">
+                                <i class="fa fa-check"></i>Up Vote
+                            </button>
+                        </form>
+                        <form action="/question/{{ question['id'] }}/vote-down" method="post">
+                            <button type="submit" class="btn btn-sm btn-outline-primary btn-custom-width mb-1">
+                                <i class="fa fa-check"></i>Down Vote
+                            </button>
+                        </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="/add-question">Add question</a>
+{% endblock content %}

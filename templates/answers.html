@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% if question %}
+        <h2>{{ question[0]['title'] }}</h2>
+        <pre>ID: {{ question[0]['id'] }}, Added on <script>document.write(askMateUtils({{ question[0]['submission_time'] }}))</script></pre>
+        <p>{{ question[0]['message'] }}</p>
+        {% if question[0]['image'] %}
+            <img src="{{ url_for('static', filename='images/'+ question[0]['image']) }}" width="320px"
+                 height="auto"/>
+        {% endif %}
+    {% endif %}
+    {% if answers %}
+        <h3>Answers:</h3>
+        <table class="table responsive">
+            <tr>
+                {% for field in fields %}
+                    {% if labels %}
+                        <th>{{ labels[field] }}</th>
+                    {% else %}
+                        <th>{{ field }}</th>
+                    {% endif %}
+                {% endfor %}
+                <th>Actions</th>
+            </tr>
+            <tbody>
+            {% for answer in answers %}
+                <tr>
+                    <td>{{ answer['id'] }}</td>
+                    <td>
+                        <script>
+                            document.write(askMateUtils({{ answer['submission_time'] }}))
+                        </script>
+                    </td>
+                    <td>{{ answer['vote_number'] }}</td>
+                    <td>{{ answer['question_id'] }} </td>
+                    <td>{{ answer['message'] }} </td>
+                    <td>
+                        {% if answer['image'] %}
+                            <img src="{{ url_for('static', filename='images/'+ answer['image']) }}" width="320px"
+                                 height="auto"/>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="/answer/{{ answer['id'] }}/delete" method="post">
+                            <button type="submit" class="btn btn-sm btn-outline-primary btn-custom-width mb-1">
+                                <i class="fa fa-check"></i>Delete
+                            </button>
+                        </form>
+                        <form action="/answer/{{ answer['id'] }}/vote-up" method="post">
+                            <button type="submit" class="btn btn-sm btn-outline-primary btn-custom-width mb-1">
+                                <i class="fa fa-check"></i>Up Vote
+                            </button>
+                        </form>
+                        <form action="/answer/{{ answer['id'] }}/vote-down" method="post">
+                            <button type="submit" class="btn btn-sm btn-outline-primary btn-custom-width mb-1">
+                                <i class="fa fa-check"></i>Down Vote
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <h3>Nobody answered this question</h3>
+    {% endif %}
+    <a href="/question/{{ question[0]['id'] }}/new-answer">Add your answer</a>
+{% endblock content %}
